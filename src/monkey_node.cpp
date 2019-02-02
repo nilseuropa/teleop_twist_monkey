@@ -12,8 +12,11 @@ float random(float min, float max) {
     return  (max - min) * ((((float) rand()) / (float) RAND_MAX)) + min ;
 }
 
-void timerCallback(const ros::TimerEvent& event){
+void timerCallbackX(const ros::TimerEvent& event){
   random_linear  = random(linear_min, linear_max);
+}
+
+void timerCallbackZ(const ros::TimerEvent& event){
   random_angular = random(angular_min, angular_max);
 }
 
@@ -45,11 +48,18 @@ int main(int argc, char** argv) {
     angular_max = 1.0;
   }
 
-  float refresh_duration;
-  if (ros::param::get("~refresh_duration", refresh_duration)) {}
+  float refresh_duration_x;
+  if (ros::param::get("~refresh_duration_x", refresh_duration_x)) {}
   else {
-    ROS_WARN("Failed to get param 'refresh_duration' - default 1 sec");
-    refresh_duration = 1.0;
+    ROS_WARN("Failed to get param 'refresh_duration_x' - default 1 sec");
+    refresh_duration_x = 1.0;
+  }
+
+  float refresh_duration_z;
+  if (ros::param::get("~refresh_duration_z", refresh_duration_z)) {}
+  else {
+    ROS_WARN("Failed to get param 'refresh_duration_z' - default 1 sec");
+    refresh_duration_z = 1.0;
   }
 
   float crossfade_coeff;
@@ -67,8 +77,9 @@ int main(int argc, char** argv) {
   }
 
   ros::Rate r(publish_rate);
-  ros::Timer timer = n.createTimer(ros::Duration(refresh_duration), timerCallback);
-  ros::Publisher cmd_pub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 50);
+  ros::Timer timer1 = n.createTimer(ros::Duration(refresh_duration_x), timerCallbackX);
+  ros::Timer timer2 = n.createTimer(ros::Duration(refresh_duration_z), timerCallbackZ);
+  ros::Publisher cmd_pub = n.advertise<geometry_msgs::Twist>("/monkey/cmd_vel", 50);
   geometry_msgs::Twist cmd_vel;
 
   float filtered_linear;
