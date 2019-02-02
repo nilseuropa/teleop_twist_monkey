@@ -8,7 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 catkin_package(
-  INCLUDE_DIRS include
+  INCLUDE_DIRS
 #  LIBRARIES teleop_twist_monkey
 #  CATKIN_DEPENDS geometry_msgs roscpp sensor_msgs
 #  DEPENDS system_lib
